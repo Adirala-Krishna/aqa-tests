@@ -41,6 +41,7 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-vm-jdwp</testCaseName>
+<!--
 		<disables>
 			<disable>
 				<comment>backlog/issues/477</comment>
@@ -51,6 +52,7 @@
 				<impl>openj9</impl>
 			</disable>
 		</disables>
+-->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
