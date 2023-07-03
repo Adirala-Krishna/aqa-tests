@@ -463,6 +463,7 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_awt</testCaseName>
+<!--
 		<disables>
 			<disable>
 				<comment>backlog/issues/608 : To be run manually</comment>
@@ -473,6 +474,7 @@
 				<impl>openj9</impl>
 			</disable>
 		</disables>
+-->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
