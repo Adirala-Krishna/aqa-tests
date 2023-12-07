@@ -165,12 +165,12 @@ getBinaryOpenjdk()
 {
 	echo "get jdk binary..."
 	cd $SDKDIR
-	mkdir -p openjdkbinary
-	cd openjdkbinary
+	mkdir -p jdkbinary
+	cd jdkbinary
 
 	if [ "$SDK_RESOURCE" != "upstream" ]; then
-		if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
-			echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
+		if [ "$(ls -A $SDKDIR/jdkbinary)" ]; then
+			echo "$SDKDIR/jdkbinary is not an empty directory, please empty it or specify a different SDK directory."
 			echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
 			exit 1
 		fi
@@ -349,7 +349,7 @@ getBinaryOpenjdk()
 			# Otherwise, files will be extracted under ./tmp
 			if [[ "$jar_name" =~ "debug-image" ]] || [[ "$jar_name" =~ "debugimage" ]]; then
 				extract_dir="./j2sdk-image"
-				if [ -d "$SDKDIR/openjdkbinary/j2sdk-image/jre" ]; then
+				if [ -d "$SDKDIR/jdkbinary/j2sdk-image/jre" ]; then
 					extract_dir="./j2sdk-image/jre"
 				fi
 				echo "Uncompressing $jar_name over $extract_dir..."
@@ -364,10 +364,10 @@ getBinaryOpenjdk()
 					fi
 				fi
 			else
-				if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then
-					rm -rf $SDKDIR/openjdkbinary/tmp/*
+				if [ -d "$SDKDIR/jdkbinary/tmp" ]; then
+					rm -rf $SDKDIR/jdkbinary/tmp/*
 				else
-					mkdir $SDKDIR/openjdkbinary/tmp
+					mkdir $SDKDIR/jdkbinary/tmp
 				fi
 				echo "Uncompressing file: $jar_name ..."
 				if [[ $jar_name == *zip ]] || [[ $jar_name == *jar ]]; then
@@ -379,7 +379,7 @@ getBinaryOpenjdk()
 					gzip -cd $jar_name | (cd tmp && tar xof -)
 				fi
 
-				cd $SDKDIR/openjdkbinary/tmp
+				cd $SDKDIR/jdkbinary/tmp
 				jar_dirs=`ls -d */`
 				jar_dir_array=(${jar_dirs//\\n/ })
 				len=${#jar_dir_array[@]}
@@ -429,7 +429,7 @@ getBinaryOpenjdk()
 				elif [ "$len" -gt 1 ]; then
 					mv ../tmp ../j2sdk-image
 				fi
-				cd $SDKDIR/openjdkbinary
+				cd $SDKDIR/jdkbinary
 			fi
 		done
 
@@ -583,81 +583,84 @@ getFunctionalTestMaterial()
 	fi
 
 	rm -rf openj9
+}
 
-	if [ "$VENDOR_REPOS" != "" ]; then
-		declare -a vendor_repos_array
-		declare -a vendor_branches_array
-		declare -a vendor_shas_array
-		declare -a vendor_dirs_array
+getVendorTestMaterial() {
+	echo "get vendor test material..."
+	cd $TESTDIR
 
-		# convert VENDOR_REPOS to array
-		vendor_repos_array=(`echo $VENDOR_REPOS | sed 's/,/\n/g'`)
+	declare -a vendor_repos_array
+	declare -a vendor_branches_array
+	declare -a vendor_shas_array
+	declare -a vendor_dirs_array
 
-		if [ "$VENDOR_BRANCHES" != "" ]; then
-			# convert VENDOR_BRANCHES to array
-			vendor_branches_array=(`echo $VENDOR_BRANCHES | sed 's/,/\n/g'`)
-		fi
+	# convert VENDOR_REPOS to array
+	vendor_repos_array=(`echo $VENDOR_REPOS | sed 's/,/\n/g'`)
 
-		if [ "$VENDOR_SHAS" != "" ]; then
-			#convert VENDOR_SHAS to array
-			vendor_shas_array=(`echo $VENDOR_SHAS | sed 's/,/\n/g'`)
-		fi
-
-		if [ "$VENDOR_DIRS" != "" ]; then
-			#convert VENDOR_DIRS to array
-			vendor_dirs_array=(`echo $VENDOR_DIRS | sed 's/,/\n/g'`)
-		fi
-
-		for i in "${!vendor_repos_array[@]}"; do
-			# clone vendor source
-			repoURL=${vendor_repos_array[$i]}
-			branch=${vendor_branches_array[$i]}
-			sha=${vendor_shas_array[$i]}
-			dir=${vendor_dirs_array[$i]}
-			dest="vendor_${i}"
-
-			branchOption=""
-			if [ "$branch" != "" ]; then
-				branchOption="-b $branch"
-			fi
-
-			echo "git clone ${branchOption} $repoURL $dest"
-			git clone -q --depth 1 $branchOption $repoURL $dest
-
-			if [ "$sha" != "" ]; then
-				cd $dest
-				echo "git fetch -q --unshallow"
-				git fetch -q --unshallow
-				echo "update to $sha"
-				git checkout $sha
-				cd $TESTDIR
-			fi
-
-			# move resources
-			if [ "$dir" != "" ] && [ -d $dest/$dir ]; then
-				echo "Stage $dest/$dir to $TESTDIR/$dir"
-				# already in TESTDIR, thus copy $dir to current directory
-				cp -r $dest/$dir ./
-				if [[ "$PLATFORM" == *"zos"* ]]; then
-					cp -r $dest/.git ./$dir
-				fi
-			else
-				echo "Stage $dest to $TESTDIR"
-				# already in TESTDIR, thus copy the entire vendor repo content to current directory
-				cp -r $dest/* ./
-			fi
-
-			# clean up
-			rm -rf $dest
-		done
+	if [ "$VENDOR_BRANCHES" != "" ]; then
+		# convert VENDOR_BRANCHES to array
+		vendor_branches_array=(`echo $VENDOR_BRANCHES | sed 's/,/\n/g'`)
 	fi
+
+	if [ "$VENDOR_SHAS" != "" ]; then
+		#convert VENDOR_SHAS to array
+		vendor_shas_array=(`echo $VENDOR_SHAS | sed 's/,/\n/g'`)
+	fi
+
+	if [ "$VENDOR_DIRS" != "" ]; then
+		#convert VENDOR_DIRS to array
+		vendor_dirs_array=(`echo $VENDOR_DIRS | sed 's/,/\n/g'`)
+	fi
+
+	for i in "${!vendor_repos_array[@]}"; do
+		# clone vendor source
+		repoURL=${vendor_repos_array[$i]}
+		branch=${vendor_branches_array[$i]}
+		sha=${vendor_shas_array[$i]}
+		dir=${vendor_dirs_array[$i]}
+		dest="vendor_${i}"
+
+		branchOption=""
+		if [ "$branch" != "" ]; then
+			branchOption="-b $branch"
+		fi
+
+		echo "git clone ${branchOption} $repoURL $dest"
+		git clone -q --depth 1 $branchOption $repoURL $dest
+
+		if [ "$sha" != "" ]; then
+			cd $dest
+			echo "git fetch -q --unshallow"
+			git fetch -q --unshallow
+			echo "update to $sha"
+			git checkout $sha
+			cd $TESTDIR
+		fi
+
+		# move resources
+		if [ "$dir" != "" ] && [ -d $dest/$dir ]; then
+			echo "Stage $dest/$dir to $TESTDIR/$dir"
+			# already in TESTDIR, thus copy $dir to current directory
+			cp -r $dest/$dir ./
+			if [[ "$PLATFORM" == *"zos"* ]]; then
+				cp -r $dest/.git ./$dir
+			fi
+		else
+			echo "Stage $dest to $TESTDIR"
+			# already in TESTDIR, thus copy the entire vendor repo content to current directory
+			cp -r $dest/* ./
+		fi
+
+		# clean up
+		rm -rf $dest
+	done
 }
 
 testJavaVersion()
 {
 	# use environment variable TEST_JDK_HOME to run java -version
 	if [ "$TEST_JDK_HOME" = "" ]; then
-		TEST_JDK_HOME=$SDKDIR/openjdkbinary/j2sdk-image
+		TEST_JDK_HOME=$SDKDIR/jdkbinary/j2sdk-image
 	fi
 	_java=${TEST_JDK_HOME}/bin/java
 	_release=${TEST_JDK_HOME}/release
@@ -781,4 +784,8 @@ fi
 
 if [ $CLONE_OPENJ9 != "false" ]; then
 	getFunctionalTestMaterial
+fi
+
+if [ "$VENDOR_REPOS" != "" ]; then
+	getVendorTestMaterial
 fi

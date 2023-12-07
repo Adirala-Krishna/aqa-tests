@@ -646,6 +646,12 @@
 				<version>8+</version>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>backlog/issues/1118</comment>
+				<version>8+</version>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
@@ -656,7 +662,7 @@
 		$(GEN_SUMMARY_GENERIC) tests=api/java_security testsuite=RUNTIME
 		</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -838,7 +844,7 @@
 		$(GEN_SUMMARY_GENERIC) tests=api/javax_crypto testsuite=RUNTIME
 		</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>jck</group>

@@ -178,6 +178,7 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	TEST_VARIATION_JIT_PREVIEW:=-XX:-JITServerTechPreviewMessage
 	TEST_VARIATION_JIT_AGGRESIVE:=-Xjit:enableAggressiveLiveness
 	TIMEOUT_HANDLER:=-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q)
+	EXTRA_OPTIONS := -Xverbosegclog $(EXTRA_OPTIONS)
 endif
 
 # if cannot find the problem list file, set to default file
@@ -192,13 +193,18 @@ ifneq ($(filter 11 16, $(JDK_VERSION)),)
 endif
 
 FEATURE_PROBLEM_LIST_FILE:=
-ifneq (,$(findstring FIPS, $(TEST_FLAG))) 
-	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-fips.txt$(Q)
+ifneq (,$(findstring FIPS140_2, $(TEST_FLAG))) 
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_2.txt$(Q)
+else ifneq (,$(findstring FIPS140_3_OpenJcePlus, $(TEST_FLAG)))
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_3_OpenJcePlus.txt$(Q)
 endif
 
 VENDOR_PROBLEM_LIST_FILE:=
 ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft))
-	VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt$(Q)
+	VENDOR_FILE:=excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt
+	ifneq (,$(wildcard $(VENDOR_FILE)))
+		VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)$(VENDOR_FILE)$(Q)
+	endif
 endif
 
 # --add-modules jdk.incubator.foreign is removed for JDK19+

@@ -1047,6 +1047,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security1</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1089</comment>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1073,6 +1080,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security2</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1089</comment>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1104,6 +1118,11 @@
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
 				<platform>.*windows.*</platform>
 				<version>8</version>
+			</disable>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1089</comment>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
 			</disable>
 		</disables>
 		<variations>
@@ -1439,6 +1458,34 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jdk_tools_openj9_DynamicLoadWarningTest</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)com/sun/tools/attach/warnings/DynamicLoadWarningTest.java$(Q); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>21+</version>
+		</versions>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_jdi_jdk8</testCaseName>
 		<disables>
 			<disable>
@@ -1518,8 +1565,8 @@
 		<testCaseName>jdk_foreign</testCaseName>
 		<disables>
 			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/17399</comment>
-				<version>21+</version>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/17872</comment>
+				<version>22+</version>
 				<impl>openj9</impl>
 			</disable>
 		</disables>
@@ -1548,45 +1595,6 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
-	</test>
-	<test>
-		<testCaseName>jdk_foreign_native</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/11760</comment>
-				<version>16+</version>
-				<impl>openj9</impl>
-			</disable>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
-				<impl>ibm</impl>
-			</disable>
-		</disables>
-		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
-		</variations>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(ADD_MODULES) $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
-	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
-	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
-	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)foreign$(D)TestNative.java$(Q); \
-	$(TEST_STATUS)</command>
-		<versions>
-			<version>14+</version>
-		</versions>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<types>
-			<type>native</type>
-		</types>
-		<groups>
-			<group>openjdk</group>
-		</groups>
-		<platformRequirements>bits.64,^arch.ppc,^arch.390,^arch.riscv,^arch.loongarch,^os.zos,^os.sunos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>jdk_instrument</testCaseName>
@@ -1813,10 +1821,6 @@
 	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_imageio$(Q); \
 	$(TEST_STATUS)</command>
-		<versions>
-			<version>8</version>
-			<version>11+</version>
-		</versions>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1867,6 +1871,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security_infra</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1089</comment>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
+			</disable>
+		</disables>	
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1884,9 +1895,6 @@
 	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security_infra$(Q); \
 	$(TEST_STATUS)</command>
-		<versions>
-			<version>11+</version>
-		</versions>
 		<levels>
 			<level>extended</level>
 		</levels>

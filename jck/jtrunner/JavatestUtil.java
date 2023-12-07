@@ -51,7 +51,7 @@ public class JavatestUtil {
 	private static String testExecutionType;
 	private static String withAgent;
 	private static String interactive;
-	private static String extraJvmOptions;
+	private static String extraJvmOptions = "";
 	private static String concurrencyString;
 	private static String jckVersion;
 	private static String config;
@@ -177,7 +177,14 @@ public class JavatestUtil {
 			} 
 		}
 		
-		jvmOpts = System.getProperty("jvm.options").trim() + " " + System.getProperty("other.opts");
+		String otherOptions = System.getProperty("other.options");
+		String jvmOptions = System.getProperty("jvm.options");
+		if (otherOptions != null) {
+			jvmOpts += otherOptions.trim() + " ";
+		}
+		if (jvmOptions != null) {
+			jvmOpts += jvmOptions.trim() + " ";
+		} 
 		testFlag = System.getenv("TEST_FLAG");
 		task = testArgs.get(TASK).trim();
 		customJtx = testArgs.get(CUSTOM_JTX) == null ? "" : testArgs.get(CUSTOM_JTX);
@@ -220,7 +227,7 @@ public class JavatestUtil {
 		secPropsFile = workDir + File.separator + "security.properties";
 		
 		// Solaris natives are in /natives/sunos
-		if (spec.contains("solaris")) {
+		if (spec.contains("sunos")) {
 			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
 		}
 		
@@ -419,7 +426,6 @@ public class JavatestUtil {
 		String robotAvailable = "";
 		String hostname = "";
 		String ipAddress = "";
-		extraJvmOptions = jvmOpts;
 		
 		// Use escaped backslashes for paths on Windows
 		if (spec.contains("win")) {
@@ -501,6 +507,10 @@ public class JavatestUtil {
 				return false; 
 			}
 			
+			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
+				keyword += "&!robot";
+			}
+			
 			fileContent += "concurrency " + concurrencyString + ";\n";
 			fileContent += "timeoutfactor 4" + ";\n";	// 4 base time limit equal 40 minutes
 			fileContent += keyword + ";\n";
@@ -538,10 +548,6 @@ public class JavatestUtil {
 						}
 					}
 				}
-			}
-
-			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
-				keyword += "&!robot";
 			}
 
 			if ( !spec.contains("win") && (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
@@ -664,13 +670,14 @@ public class JavatestUtil {
 			// Get any additional jvm options for specific tests.
 			extraJvmOptions += getTestSpecificJvmOptions(jckVersion, tests);
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
+			
 
 			if (jckVersionInt > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
 			}
 
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
-			fileContent += "set jck.env.runtime.testExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";
+			fileContent += "set jck.env.runtime.testExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";
 
 			// Tests that need Display on OSX also require AWT_FORCE_HEADFUL=true 
 			if (spec.contains("osx")) {
@@ -746,6 +753,7 @@ public class JavatestUtil {
 			}
 
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
+			
 
 			if (jckVersionInt > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
@@ -753,7 +761,7 @@ public class JavatestUtil {
 			
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
 			if (!testExecutionType.equals("multijvm")) { 
-				fileContent += "set jck.env.compiler.compRefExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";
+				fileContent += "set jck.env.compiler.compRefExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";
 			}
 		}
 		// Devtools settings
@@ -787,7 +795,7 @@ public class JavatestUtil {
 				jxcCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "schemagen.sh";
 				genCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsgen.sh";
 				impCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsimport.sh";
-			} else if (spec.contains("zos") || spec.contains("solaris")) {
+			} else if (spec.contains("zos") || spec.contains("sunos")) {
 				pathToJavac = testJdk + File.separator + "bin" + File.separator + "javac";
 				xjcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "xjc.sh";
 				jxcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "schemagen.sh";
@@ -802,7 +810,7 @@ public class JavatestUtil {
 			if (spec.contains("linux")) {
 				xjcCmd = "bash "+xjcCmd;
 				jxcCmd = "bash "+jxcCmd;
-			} else if (spec.contains("solaris")) {
+			} else if (spec.contains("sunos")) {
 				xjcCmd = "ksh "+xjcCmd;
 				jxcCmd = "ksh "+jxcCmd;
 			}
@@ -839,9 +847,10 @@ public class JavatestUtil {
 			// Get any additional jvm options for specific tests.
 			extraJvmOptions += getTestSpecificJvmOptions(jckVersion, tests);
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
+			
 
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
-			fileContent += "set jck.env.devtools.refExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";	
+			fileContent += "set jck.env.devtools.refExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";	
 		}
 
 		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
