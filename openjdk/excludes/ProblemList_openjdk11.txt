@@ -214,15 +214,6 @@ sun/security/pkcs11/Secmod/AddTrustedCert.java https://github.com/adoptium/aqa-t
 
 # jdk_security_infra
 
-security/infra/java/security/cert/CertPathValidator/certification/GoogleCA.java https://bugs.openjdk.org/browse/JDK-8309088 generic-all
-security/infra/java/security/cert/CertPathValidator/certification/AmazonCA.java https://bugs.openjdk.org/browse/JDK-8309088 generic-all
-security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
-security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
-security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
-security/infra/java/security/cert/CertPathValidator/certification/EntrustCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
-security/infra/java/security/cert/CertPathValidator/certification/DTrustCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
-security/infra/java/security/cert/CertPathValidator/certification/HaricaCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
-
 ############################################################################
 
 # jdk_sound
@@ -290,6 +281,7 @@ compiler/c2/cr6340864/TestShortVect.java https://github.com/adoptium/aqa-tests/i
 compiler/c2/TestReplaceEquivPhis.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/codegen/TestCharVect2.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/loopopts/TestUnswitchCloneSkeletonPredicates.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/TestRemoveEmptyCountedLoop.java https://bugs.openjdk.org/browse/JDK-8311964 windows-x86
 compiler/loopstripmining/AntiDependentLoadInOuterStripMinedLoop.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/loopstripmining/LoadDependsOnIfIdenticalToLoopExit.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/loopstripmining/TestConservativeAntiDep.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
