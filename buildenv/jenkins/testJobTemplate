@@ -369,9 +369,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 								TARGET=jdk_custom (support multiple test cases separated by space, hotspot_custom works same<br>
 								CUSTOM_TARGET=test/jdk/java/math/BigInteger/LargeValueExceptions.java java/math/BigInteger/BigIntegerTest.java<br>
 								Example 3:<br>
-								TARGET=jck_custom<br>
-								CUSTOM_TARGET=lang/INFR/....html,testsuite=COMPILER<br>
-								Note: testsuite is optional. It can be set to [RUNTIME(default) | COMPILER | DEVTOOLS]<br>''')
+								TARGET=jckruntime_custom<br>
+								CUSTOM_TARGET=lang/INFR/....html<br>''')
 							parameterSeparatorDefinition {
 							    name('TEST_OPTIONS_PARAMS')
 							    separatorStyle(separatorStyleCss)
@@ -384,7 +383,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Additional test parameters if you want to append or replace options, or repeat the test for more than 1 iteration.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT', 'FIPS', 'FIPS140_2'], "Optional. Only set for feature testing. (i.e.,  JITAAS, AOT, FIPS140_2, etc)")
+							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT', 'FIPS', 'FIPS140_2', 'FIPS140_3_OpenJCEPlusFIPS'], "Optional. Only set for feature testing. (i.e.,  JITAAS, AOT, FIPS140_2, etc)")
 							stringParam('EXTRA_OPTIONS', "", "Use this to append options to the test command")
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
                                                         stringParam('APPLICATION_OPTIONS', "", "Use this to append options to the test application")
