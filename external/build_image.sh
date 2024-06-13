@@ -24,7 +24,6 @@ if [ $# -ne 9 ] && [ $# -ne 10 ]; then
 	echo
 	echo "usage: $0 test version vm os package build platform check_external_custom"
 	echo "test    = ${supported_tests}"
-	echo "version = ${supported_versions}"
 	echo "vm      = ${supported_jvms}"
 	echo "os      = ${supported_os}"
 	echo "package = ${supported_packages}"
@@ -42,7 +41,6 @@ check_external_custom=$9
 if [[ "${check_external_custom}" == "0" ]]; then
 	set_test $1
 fi
-set_version $2
 set_vm $3
 set_os $4
 set_package $5
@@ -65,7 +63,7 @@ function build_image() {
 	echo "The test in the build_image() function is ${test}"
     # Used for tagging the image
     tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
-	if [[ "$test" == *"criu"* ]]; then
+	if [[ "$test" == *"criu"* || "$test" == *"tck"* ]]; then
 		container_build="sudo podman build"
 	fi
 
