@@ -15,14 +15,20 @@
 ifndef CYGWIN
   OSTYPE?=$(shell echo $$OSTYPE)
   CYGWIN:=0
+  WINDOWS:=0
   ifeq ($(OSTYPE),cygwin)
     CYGWIN:=1
   endif
   ifeq ($(TERM),cygwin)
     CYGWIN:=1
   endif
+    ifeq ($(OS),Windows_NT)
+    WINDOWS:=1
+    CYGWIN:=0
+  endif
 endif
 $(warning CYGWIN is $(CYGWIN))
+$(warning WINDOWS is $(WINDOWS))
 
 ifeq ($(CYGWIN),1)
   # If we are running under cygwin, the tests need to run with a Windows perl port (e.g. Strawberry perl) rather
@@ -37,6 +43,9 @@ ifeq ($(CYGWIN),1)
   endif
   PERL:=$(dir $(PERL))
   export PATH:=$(PERL):$(PATH)
+endif
+ifeq ($(WINDOWS),1)
+  CMD_PREFIX=cmd /c
 endif
 
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../
