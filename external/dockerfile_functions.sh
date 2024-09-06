@@ -14,6 +14,7 @@
 #
 
 source $(dirname "$0")/common_functions.sh
+source $(dirname "$0")/provider.sh
 
 # Generate the common license and copyright header
 print_legal() {
@@ -83,7 +84,7 @@ print_image_args() {
     local build=$7
     local base_docker_registry_dir="$8"
 
-    image_name="eclipse-temurin"
+    image_name="docker.io/library/eclipse-temurin"
     tag=""
     if [[ "${package}" == "jre" ]]; then
         tag="${version}-jre"
@@ -126,7 +127,7 @@ print_test_tag_arg() {
 
 print_result_comment_arg() {
     local file=$1
-    echo -e "ENV RESULT_COMMENT=\"IN DOCKER\"\n" >> ${file}
+    echo -e "ENV RESULT_COMMENT=\"IN CONTAINER($(getProviderTile))\"\n" >> ${file}
 }
 
 # Select the ubuntu OS packages
@@ -197,11 +198,11 @@ print_jdk_install() {
             "\n\t PATH=\"/opt/java/openjdk/bin:\$PATH\" " \
             "\n" >> ${file}
 
-    echo -e "\nENV JAVA_TOOL_OPTIONS=\"-XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle\" " \
+    echo -e "\nENV JAVA_TOOL_OPTIONS=\"$JAVA_TOOL_OPTIONS -XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle\" " \
             "\n" >> ${file}
 
     echo -e "\nENV RANDFILE=/tmp/.rnd  \\" \
-            "\n\t OPENJ9_JAVA_OPTIONS=\"-XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle -Dosgi.checkConfiguration=false\" " \
+            "\n\t OPENJ9_JAVA_OPTIONS=\"$OPENJ9_JAVA_OPTIONS -XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle -Dosgi.checkConfiguration=false\" " \
             "\n" >> ${file}
 
 }
@@ -445,7 +446,7 @@ print_maven_install() {
 print_java_tool_options() {
     local file=$1
 
-    echo -e "ENV JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom\"\n" >> ${file}
+    echo -e "ENV JAVA_TOOL_OPTIONS=\"$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom\"\n" >> ${file}
 }
 
 print_environment_variable() {
@@ -457,10 +458,10 @@ print_environment_variable() {
 
 print_home_path() {
     local file=$1
-    local aqa_tests_repo=$2
+    local github_url=$2
 
     # Get Github folder name
-    local folder="$(echo ${aqa_tests_repo} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+    local folder="$(echo ${github_url} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
     echo -e "ENV TEST_HOME /${folder}\n" >> ${file}
 }
 
@@ -506,29 +507,36 @@ print_testInfo_env() {
             "\nENV JDK_VERSION=${version}" \
             "\nENV JDK_IMPL=${vm}" \
             "\n" >> ${file}
-    echo -e "\nENV USE_TESTENV_PROPERTIES ${USE_TESTENV_PROPERTIES} \n" >> ${file}
 }
 
 print_clone_project() {
     local file=$1
     local test=$2
-    local aqa_tests_repo=$3
-    local aqa_tests_branch=$4
+    local github_url=$3
 
     # Cause Test name to be capitalized
     test_tag="$(sanitize_test_names ${test} | tr a-z A-Z)_TAG"
-    if [[ "$test_tag" != *"CRIU"* && "$test_tag" != *"TCK"* ]]; then
-        aqa_tests_branch=$test_tag
+    git_branch_tag="master"
+    if [[ "${github_url}" == *"aqa-tests"* ]]; then
+        if [[ ! -z ${USE_TESTENV_PROPERTIES} ]]; then
+            if [[ "${USE_TESTENV_PROPERTIES}" == "true" && ! -z ${ADOPTOPENJDK_REPO} && ! -z ${ADOPTOPENJDK_BRANCH} ]]; then
+                github_url=${ADOPTOPENJDK_REPO}
+                git_branch_tag=${ADOPTOPENJDK_BRANCH}
+                echo -e "\nENV USE_TESTENV_PROPERTIES=true\n" >> ${file}
+            fi
+        fi
+    else
+        git_branch_tag=\$${test_tag}
     fi
 
     # Get Github folder name
-    folder="$(echo ${aqa_tests_repo} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+    folder="$(echo ${github_url} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 
     echo -e "# Clone ${test} source" \
             "\nENV ${test_tag}=\$${test_tag}" \
-            "\nRUN git clone ${aqa_tests_repo}" \
+            "\nRUN git clone ${github_url}" \
             "\nWORKDIR /${folder}/" \
-            "\nRUN git checkout ${aqa_tests_branch}" \
+            "\nRUN git checkout ${git_branch_tag}" \
             "\nWORKDIR /" \
             "\n" >> ${file}
 }
@@ -657,9 +665,9 @@ generate_dockerfile() {
         print_test_results ${file};
     fi
 
-    print_home_path ${file} ${ADOPTOPENJDK_REPO};
+    print_home_path ${file} ${github_url};
     print_testInfo_env ${test} ${tag_version} ${os} ${version} ${vm}
-    print_clone_project ${file} ${test} ${ADOPTOPENJDK_REPO} ${ADOPTOPENJDK_BRANCH} ;
+    print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 
     if [[ "$check_external_custom_test" == "1" ]]; then
