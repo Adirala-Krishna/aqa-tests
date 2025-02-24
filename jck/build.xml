@@ -290,11 +290,12 @@
 	</target>
 
 	<target name="build-natives-unix" if="can_build_jck_natives_unix">
-		<echo message="${openjdk_test_jck_native_build_command}" file="${openjdk_test_jck_native_build_command_file}.sh"/>
-		<exec executable="/bin/sh" failonerror="true">
-			<arg value="${openjdk_test_jck_native_build_command_file}.sh"/>
-		</exec>
-		<delete file="${openjdk_test_jck_native_build_command_file}.sh" verbose="true"/>
+    		<echo message="${openjdk_test_jck_native_build_command}" file="${openjdk_test_jck_native_build_command_file}.sh"/>
+    			<exec executable="/bin/sh" failonerror="true">
+        		<arg value="-c"/>
+        		<arg value="LANG=IBM1047 LC_ALL=IBM1047 ./${openjdk_test_jck_native_build_command_file}.sh"/>
+    			</exec>
+    		<delete file="${openjdk_test_jck_native_build_command_file}.sh" verbose="true"/>
 	</target>
 	
 	<target name="build-jtrunner" depends="build-jck-natives, create-bin-dir">
