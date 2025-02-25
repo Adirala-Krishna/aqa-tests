@@ -290,12 +290,12 @@
 	</target>
 
 	<target name="build-natives-unix" if="can_build_jck_natives_unix">
-    		<echo file="${openjdk_test_jck_native_build_command_file}.sh" append="true">
-    			export JAVA_TOOL_OPTIONS='-Dfile.encoding=IBM-1047'
-		</echo>
-		<exec executable="/bin/sh" failonerror="true">
-    			<arg value="${openjdk_test_jck_native_build_command_file}.sh"/>
-		</exec>
+    		<echo message="${openjdk_test_jck_native_build_command}" file="${openjdk_test_jck_native_build_command_file}.sh"/>
+			<exec executable="sh">
+				<env key="IBM_JAVA_OPTIONS" value="-Dfile.encoding=IBM-1047" />
+				<arg value="-c" />
+				<arg value="echo IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS} ./${openjdk_test_jck_native_build_command_file}.sh" />
+			</exec>
     		<delete file="${openjdk_test_jck_native_build_command_file}.sh" verbose="true"/>
 	</target>
 	
