@@ -466,7 +466,7 @@ public class JavatestUtil {
 		}
 		
 		if (spec.contains("zos")) {
-			extraJvmOptions += " -Dfile.encoding=US-ASCII";
+			extraJvmOptions += " -Dfile.encoding=UTF-8";
 		}
 		
 		// testExecutionType of multiJVM_group on Windows and AIX causes memory exhaustion, so limit to non-group multiJVM
