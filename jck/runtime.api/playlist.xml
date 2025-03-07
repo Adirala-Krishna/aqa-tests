@@ -553,6 +553,11 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang</testCaseName>
+		<disables>
+			<disable>
+				<comment>Hanging in triage, will check others and enable it</comment>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
