@@ -58,12 +58,17 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-xml_schema-nistData-atomic</testCaseName>
-		<disables>
+<!-- 		<disables>
 			<disable>
 				<comment>Disabled on win due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
 				<platform>x86-64_windows</platform>
 				<version>11</version>
 				<impl>openj9</impl>
+			</disable>
+		</disables> -->
+		<disables>Add commentMore actions
+			<disable>
+				<comment>Hanging in triage, will check others and enable it</comment>
 			</disable>
 		</disables>
 		<variations>
