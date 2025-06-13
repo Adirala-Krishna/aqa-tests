@@ -1146,7 +1146,9 @@ public class JavatestUtil {
 		}
 
 		testSpecificJvmOptions += " -Djdk.attach.allowAttachSelf=true";
-
+		if (spec.contains("zos")) {
+			testSpecificJvmOptions += " -Dcom.ibm.tools.attach.enable=yes";
+		}
 		return testSpecificJvmOptions;
 	}  
 
