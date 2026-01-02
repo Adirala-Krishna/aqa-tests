@@ -242,7 +242,7 @@
 				</if>
 			</else>
 		</if>
-		<if>
+		<!-- <if>
 			<isset property="isZOS" />
 			<then>
 				<if>
@@ -271,7 +271,47 @@
 					</else>
 				</if>
 			</then>
-		</if> 
+		</if>  -->
+	<if>
+    <isset property="isZOS" />
+    <then>
+        <if>
+            <isset property="local-material-uptodate"/>
+            <then>
+                <echo message="Local JCK materials up-to-date. Skipping hard reset"/>
+            </then>
+            <else>
+                <echo message="Performing z/OS-safe hard reset of ${JCK_ROOT_USED} using .gitattributes.zos"/>
+                <!-- ===================================================== -->
+                <!-- Step 1: Ensure .git/info exists                        -->
+                <!-- ===================================================== -->
+                <mkdir dir="${JCK_ROOT_USED}/.git/info"/>
+                <!-- IMPORTANT: copy, do NOT move -->
+                <copy file="${JCK_ROOT_USED}/.gitattributes.zos"
+                      tofile="${JCK_ROOT_USED}/.git/info/attributes"
+                      overwrite="true"/>
+                <!-- ===================================================== -->
+                <!-- Step 2: Remove working tree ONLY (keep .git intact)   -->
+                <!-- ===================================================== -->
+                <delete includeemptydirs="true" failonerror="false">
+                    <fileset dir="${JCK_ROOT_USED}">
+                        <exclude name=".git/**"/>
+                    </fileset>
+                </delete>
+                <!-- ===================================================== -->
+                <!-- Step 3: Fresh checkout so attributes are applied       -->
+                <!-- ===================================================== -->
+                <exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
+                    <env key="_BPXK_AUTOCVT" value="OFF"/>
+                    <env key="_CEE_RUNOPTS" value="FILETAG(OFF)"/>
+                    <arg value="checkout"/>
+                    <arg value="-f"/>
+                </exec>
+                <echo message="z/OS checkout completed with attributes applied"/>
+            </else>
+         </if>
+     </then>
+ </if>
 	</target>
 	
 	<target name="build-jck-natives" depends="setup-native-build-command, build-natives-windows, build-natives-unix"> 
