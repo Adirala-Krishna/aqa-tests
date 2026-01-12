@@ -20,7 +20,9 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) testsuite=RUNTIME tests="$(JCKRUNTIME_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"; \
-		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		<!-- $(EXEC_RUNTIME_TEST_WITH_AGENT); \ -->
+		$(START_AGENT_GENERIC); \
+		$(EXEC_RUNTIME_TEST); \
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) testsuite=RUNTIME tests="$(JCKRUNTIME_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"
 		</command>
@@ -384,19 +386,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_util-regex</testCaseName>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
 			</disable>
-		</disables>
+		</disables> -->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_util/regex testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		<!-- $(EXEC_RUNTIME_TEST_WITH_AGENT); \ -->
+		$(START_AGENT_GENERIC); \
+		$(EXEC_RUNTIME_TEST); \	
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=api/java_util/regex testsuite=RUNTIME
 		</command>
@@ -430,7 +434,9 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_util/ResourceBundle testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		<!-- $(EXEC_RUNTIME_TEST_WITH_AGENT); \ -->
+		$(START_AGENT_GENERIC); \
+		$(EXEC_RUNTIME_TEST); \	
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=api/java_util/ResourceBundle testsuite=RUNTIME
 		</command>
@@ -478,7 +484,7 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_awt</testCaseName>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>backlog/issues/608 : To be run manually</comment>
 				<impl>ibm</impl>
@@ -487,7 +493,7 @@
 				<comment>backlog/issues/608 : To be run manually</comment>
 				<impl>openj9</impl>
 			</disable>
-		</disables>
+		</disables> -->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -619,7 +625,7 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_net</testCaseName>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
 				<platform>.*zos.*</platform>
@@ -629,12 +635,14 @@
 				<platform>ppc64_aix|x86-64_mac|x86-64_windows|x86-32_windows</platform>
 				<impl>openj9</impl>
 			</disable>
-		</disables>
+		</disables> -->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_net testsuite=RUNTIME concurrency=1; \
-		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		<!-- $(EXEC_RUNTIME_TEST_WITH_AGENT); \ -->
+		$(START_AGENT_GENERIC); \
+		$(EXEC_RUNTIME_TEST); \	
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=api/java_net testsuite=RUNTIME
 		</command>
@@ -664,19 +672,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_rmi</testCaseName>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>Temporarily disabled on z/OS for backlog/issues/744</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
 			</disable>
-		</disables>
+		</disables> -->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_rmi testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_RMI_SERVICES); \
+		<!-- $(EXEC_RUNTIME_TEST_WITH_RMI_SERVICES); \ -->
+		$(START_AGENT_GENERIC); \
+		$(EXEC_RUNTIME_TEST); \
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=api/java_rmi testsuite=RUNTIME
 		</command>
@@ -771,19 +781,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_util</testCaseName>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>Disabled on z/OS due to backlog/issues/732</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
 			</disable>
-		</disables>
+		</disables> -->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_util testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		<!-- $(EXEC_RUNTIME_TEST_WITH_AGENT); \ -->
+		$(START_AGENT_GENERIC); \
+		$(EXEC_RUNTIME_TEST); \	
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=api/java_util testsuite=RUNTIME
 		</command>
@@ -948,19 +960,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_management</testCaseName>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>Disabled on z/OS due to backlog/issues/730</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
 			</disable>
-		</disables>
+		</disables> -->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_management testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		<!-- $(EXEC_RUNTIME_TEST_WITH_AGENT); \ -->
+		$(START_AGENT_GENERIC); \
+		$(EXEC_RUNTIME_TEST); \	
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=api/javax_management testsuite=RUNTIME
 		</command>
@@ -997,12 +1011,12 @@
 				<impl>ibm</impl>
 				<platform>.*zos.*</platform>
 			</disable>
-			<disable>
+			<!-- <disable>
 				<comment>Disabled on z/OS due to backlog/issues/744</comment>
 				<version>11</version>
 				<impl>ibm</impl>
 				<platform>s390x_zos</platform>
-			</disable>
+			</disable> -->
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
@@ -1050,14 +1064,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_rmi</testCaseName>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>Disabled on z/OS due to backlog/issues/744</comment>
 				<version>11</version>
 				<impl>ibm</impl>
 				<platform>s390x_zos</platform>
 			</disable>
-		</disables>
+		</disables> -->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1151,7 +1165,7 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_swing</testCaseName>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>backlog/issues/608 : To be run manually</comment>
 				<impl>ibm</impl>
@@ -1160,7 +1174,7 @@
 				<comment>backlog/issues/608 : To be run manually</comment>
 				<impl>openj9</impl>
 			</disable>
-		</disables>
+		</disables> -->
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1228,7 +1242,9 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_xml testsuite=RUNTIME concurrency=1; \
-		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		<!-- $(EXEC_RUNTIME_TEST_WITH_AGENT); \ -->
+		$(START_AGENT_GENERIC); \
+		$(EXEC_RUNTIME_TEST); \	
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=api/javax_xml testsuite=RUNTIME
 		</command>
@@ -1238,7 +1254,7 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>backlog/issues/600</comment>
 				<impl>openj9</impl>
@@ -1247,7 +1263,7 @@
 				<comment>backlog/issues/600</comment>
 				<impl>ibm</impl>
 			</disable>
-		</disables>
+		</disables> -->
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-org_ietf</testCaseName>
@@ -1265,12 +1281,12 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<disables>
+		<!-- <disables>
 			<disable>
 				<comment>backlog/issues/567</comment>
 				<platform>.*zos.*</platform>
 			</disable>
-		</disables>
+		</disables> -->
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-org_omg</testCaseName>
