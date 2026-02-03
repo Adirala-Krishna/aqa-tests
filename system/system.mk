@@ -36,7 +36,7 @@ ifeq ($(CYGWIN),1)
     $(warning Found perl in $(PERL))
   endif
   PERL:=$(dir $(PERL))
-  # export PATH:=$(PERL):$(PATH)
+   export PATH:=$(PATH):$(PERL)
 endif
 
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../
